@@ -82,8 +82,10 @@ export default class Board extends Component {
     }
 
     checkIfWin = (target) => {
-        let vertical = this.checkVertical(target);
-        console.log("vertical check: ", vertical)
+        // let vertical = this.checkVertical(target);
+        // let horizontal = this.checkHorizontal(target);
+        let diagonal = this.checkDiagonal(diagonal);
+        console.log("horizontal check: ", diagonal)
 
         // if (this.checkVertical() || this.checkHorizontal() || this.checkDiagonal()) {
         //     return true;
@@ -115,12 +117,50 @@ export default class Board extends Component {
         }
     }
 
-    checkHorizontal = () => {
-        
+    checkHorizontal = (target) => {
+        let turn = this.state.playerTurn;
+        let row = target.getAttribute("row");
+
+        let allBoxesInRow = [];
+        var allElements = document.getElementsByTagName('td');
+        for (var i = 0, n = allElements.length; i < n; i++) {
+            if (allElements[i].getAttribute("row") == row) {
+                if(allElements[i].getAttribute("ownedby") !== null) {
+                    if(allElements[i].getAttribute("ownedby") == turn) {
+                        allBoxesInRow.push(parseInt(allElements[i].getAttribute("column")));
+                    }
+                }
+            }
+        }
+
+        if (this.checkConsec(allBoxesInRow)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
-    checkDiagonal = () => {
-        
+    checkDiagonal = (target) => {
+        let turn = this.state.playerTurn;
+        let row = target.getAttribute("row");
+
+        let allBoxesInRow = [];
+        var allElements = document.getElementsByTagName('td');
+        for (var i = 0, n = allElements.length; i < n; i++) {
+            if (allElements[i].getAttribute("row") == row) {
+                if(allElements[i].getAttribute("ownedby") !== null) {
+                    if(allElements[i].getAttribute("ownedby") == turn) {
+                        allBoxesInRow.push(parseInt(allElements[i].getAttribute("column")));
+                    }
+                }
+            }
+        }
+
+        if (this.checkConsec(allBoxesInRow)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     checkConsec = (array) => {
