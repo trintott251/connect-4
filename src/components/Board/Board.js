@@ -5,7 +5,8 @@ export default class Board extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            playerTurn: 1
+            playerTurn: 1,
+            gameOver: false
         };
     }
 
@@ -42,16 +43,19 @@ export default class Board extends Component {
         // let row = parent.parentNode.getAttribute("row");
 
         let boxToCheck = this.getBoxToCheck(column);
-        console.log("boxToCheck", boxToCheck);
+        // console.log("boxToCheck", boxToCheck);
 
         if (target.style.cssText) { 
             return;
         } else {
             let playerTurn = this.state.playerTurn;
             playerTurn == 1 ? boxToCheck.childNodes[0].style.backgroundColor = "red" : boxToCheck.childNodes[0].style.backgroundColor = "blue";
-            playerTurn == 1 ? this.setState({playerTurn:2}) : this.setState({playerTurn:1});
             boxToCheck.setAttribute('checked', 'true');
+            boxToCheck.setAttribute('ownedby', this.state.playerTurn);
+            playerTurn == 1 ? this.setState({playerTurn:2}) : this.setState({playerTurn:1});
         }
+
+        this.checkIfWin(parent);
     }
 
     getBoxToCheck = (column) => {
@@ -75,6 +79,73 @@ export default class Board extends Component {
             }
         }
         return null;
+    }
+
+    checkIfWin = (target) => {
+        let vertical = this.checkVertical(target);
+        console.log("vertical check: ", vertical)
+
+        // if (this.checkVertical() || this.checkHorizontal() || this.checkDiagonal()) {
+        //     return true;
+        // } else {
+        //     return false;
+        // }
+    }
+
+    checkVertical = (target) => {
+        let turn = this.state.playerTurn;
+        let column = target.getAttribute("column");
+
+        let allBoxesInColumn = [];
+        var allElements = document.getElementsByTagName('td');
+        for (var i = 0, n = allElements.length; i < n; i++) {
+            if (allElements[i].getAttribute("column") == column) {
+                if(allElements[i].getAttribute("ownedby") !== null) {
+                    if(allElements[i].getAttribute("ownedby") == turn) {
+                        allBoxesInColumn.push(parseInt(allElements[i].getAttribute("row")));
+                    }
+                }
+            }
+        }
+
+        if (this.checkConsec(allBoxesInColumn)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    checkHorizontal = () => {
+        
+    }
+
+    checkDiagonal = () => {
+        
+    }
+
+    checkConsec = (array) => {
+        var current = null;
+        var cnt = 0;
+
+        for (var i = 0; i < array.length; i++) {
+            // Also need to make sure the next array item is a consecutive increase.
+            if (array[i] != current && array[i] === array[i-1] + 1) {
+                if (cnt > 3) {
+                    return true;
+                }
+
+                current = array[i];
+                cnt++;
+            } else {
+                cnt = 1;
+            }
+        }
+
+        if (cnt > 3) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     render() {
