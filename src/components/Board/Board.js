@@ -1,5 +1,6 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import styles from "./Board.module.scss";
+import GameOverDialog from '../GameOverDialog/GameOverDialog';
 
 export default class Board extends Component {
     constructor(props) {
@@ -7,7 +8,7 @@ export default class Board extends Component {
         this.state = {
             playerTurn: 1,
             gameOver: false,
-            lastCheckedBox: null
+            playerWon: null
         };
     }
 
@@ -30,7 +31,7 @@ export default class Board extends Component {
         for(let i = 0; i < 7; i++){
             data.push(
                 <td column={i} row={row} key={i} checked={false}>
-                    <div className={styles.circle} onClick={(e) => this.clickBox(e)}>{row} - {i}</div>
+                    <div className={styles.circle} onClick={(e) => this.clickBox(e)}></div>
                 </td>
                 // <td column={i} row={row} key={i} checked={false} onClick={(e) => this.clickBox(e)}>
                 //     <div className={styles.circle}></div>
@@ -56,13 +57,12 @@ export default class Board extends Component {
                 return;
             } else {
                 let playerTurn = this.state.playerTurn;
-                playerTurn == 1 ? boxToCheck.childNodes[0].style.backgroundColor = "red" : boxToCheck.childNodes[0].style.backgroundColor = "blue";
+                playerTurn === 1 ? boxToCheck.childNodes[0].style.backgroundColor = "red" : boxToCheck.childNodes[0].style.backgroundColor = "blue";
                 boxToCheck.setAttribute('checked', 'true');
                 boxToCheck.setAttribute('ownedby', this.state.playerTurn);
-                playerTurn == 1 ? this.setState({playerTurn:2}) : this.setState({playerTurn:1});
+                this.checkIfWin(boxToCheck)
+                playerTurn === 1 ? this.setState({playerTurn:2}) : this.setState({playerTurn:1});
             }
-
-            this.checkIfWin(boxToCheck);
         }
     }
 
@@ -99,7 +99,7 @@ export default class Board extends Component {
         var allElements = document.getElementsByTagName('td');
         for (var i = 0, n = allElements.length; i < n; i++)
         {
-          if (allElements[i].getAttribute("column") == column)
+          if (allElements[i].getAttribute("column") === column)
           {
             allBoxesInColumn.push(allElements[i]);
           }
@@ -120,9 +120,7 @@ export default class Board extends Component {
 
     checkIfWin = (target) => {
         if (this.checkVertical(target) || this.checkHorizontal(target) || this.checkDiagonal(target)) {
-            let player = this.state.playerTurn == 1 ? "Red" : "Blue";
-            this.setState({ gameOver: true });
-            console.log(player, " player wins the game!")
+            this.setState({ gameOver: true, playerWon: this.state.playerTurn });
         }
     }
 
@@ -133,7 +131,7 @@ export default class Board extends Component {
         let allBoxesInColumn = [];
         var allElements = document.getElementsByTagName('td');
         for (var i = 0, n = allElements.length; i < n; i++) {
-            if (allElements[i].getAttribute("column") == column) {
+            if (allElements[i].getAttribute("column") === column) {
                 if(allElements[i].getAttribute("ownedby") !== null) {
                     if(allElements[i].getAttribute("ownedby") == turn) {
                         allBoxesInColumn.push(parseInt(allElements[i].getAttribute("row")));
@@ -156,7 +154,7 @@ export default class Board extends Component {
         let allBoxesInRow = [];
         var allElements = document.getElementsByTagName('td');
         for (var i = 0, n = allElements.length; i < n; i++) {
-            if (allElements[i].getAttribute("row") == row) {
+            if (allElements[i].getAttribute("row") === row) {
                 if(allElements[i].getAttribute("ownedby") !== null) {
                     if(allElements[i].getAttribute("ownedby") == turn) {
                         allBoxesInRow.push(parseInt(allElements[i].getAttribute("column")));
@@ -285,14 +283,22 @@ export default class Board extends Component {
     }
 
     render() {
+        let { gameOver, playerWon } = this.state;
+
         return (
-            <div className={styles["board"]}>
-                <table>
-                    <tbody>
-                        {this.createBoard()}
-                    </tbody>
-                </table>
-            </div>
+            <Fragment>
+                {
+                    gameOver &&
+                    <GameOverDialog playerWon={playerWon}/>
+                }
+                <div className={styles["board"]}>
+                    <table>
+                        <tbody>
+                            {this.createBoard()}
+                        </tbody>
+                    </table>
+                </div>
+            </Fragment>
         );
     }
 }
