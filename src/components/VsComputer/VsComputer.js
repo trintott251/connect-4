@@ -9,6 +9,7 @@ export default class Board extends Component {
             table: [],
             playerTurn: 1,
             gameOver: false,
+            isDraw: false,
             playerWon: null,
             lastCheckedBox: null
         };
@@ -72,6 +73,7 @@ export default class Board extends Component {
             boxToCheck.setAttribute('ownedby', this.state.playerTurn);
             this.checkIfWin(boxToCheck);
             playerTurn === 1 ? this.setState({playerTurn:2}) : this.setState({playerTurn:1});
+            this.setState({ numberOfTurns: this.state.numberOfTurns + 1 });
         }
     }
 
@@ -102,6 +104,9 @@ export default class Board extends Component {
     checkIfWin = (target) => {
         if (this.checkVertical(target) || this.checkHorizontal(target) || this.checkDiagonal(target)) {
             this.setState({ gameOver: true, playerWon: this.state.playerTurn });
+        } 
+        else if (this.state.numberOfTurns == 42) {
+            this.setState({ isDraw: true, gameOver: true })
         }
     }
 
@@ -279,7 +284,7 @@ export default class Board extends Component {
 
 
     render() {
-        let { gameOver, playerWon, playerTurn } = this.state;
+        let { gameOver, playerWon, playerTurn, isDraw } = this.state;
 
         return (
             <Fragment>
@@ -288,6 +293,7 @@ export default class Board extends Component {
                     ? <GameOverDialog
                         playAgain={() => this.playAgain()}
                         playerWon={playerWon}
+                        isDraw={isDraw}
                     />
                     : <div className={styles["board"]}>
                         <div className={styles["player-turn"]}>
