@@ -52,10 +52,10 @@ export default class Board extends Component {
             return;
         } else {
             let playerTurn = this.state.playerTurn;
-            playerTurn == 1 ? boxToCheck.childNodes[0].style.backgroundColor = "red" : boxToCheck.childNodes[0].style.backgroundColor = "blue";
+            playerTurn === 1 ? boxToCheck.childNodes[0].style.backgroundColor = "red" : boxToCheck.childNodes[0].style.backgroundColor = "blue";
             boxToCheck.setAttribute('checked', 'true');
             boxToCheck.setAttribute('ownedby', this.state.playerTurn);
-            playerTurn == 1 ? this.setState({playerTurn:2}) : this.setState({playerTurn:1});
+            playerTurn === 1 ? this.setState({playerTurn:2}) : this.setState({playerTurn:1});
         }
 
         this.checkIfWin(parent);
@@ -94,7 +94,7 @@ export default class Board extends Component {
         var allElements = document.getElementsByTagName('td');
         for (var i = 0, n = allElements.length; i < n; i++)
         {
-          if (allElements[i].getAttribute("column") == column)
+          if (allElements[i].getAttribute("column") === column)
           {
             allBoxesInColumn.push(allElements[i]);
           }
@@ -132,9 +132,9 @@ export default class Board extends Component {
         let allBoxesInColumn = [];
         var allElements = document.getElementsByTagName('td');
         for (var i = 0, n = allElements.length; i < n; i++) {
-            if (allElements[i].getAttribute("column") == column) {
+            if (allElements[i].getAttribute("column") === column) {
                 if(allElements[i].getAttribute("ownedby") !== null) {
-                    if(allElements[i].getAttribute("ownedby") == turn) {
+                    if(allElements[i].getAttribute("ownedby") === turn) {
                         allBoxesInColumn.push(parseInt(allElements[i].getAttribute("row")));
                     }
                 }
@@ -155,9 +155,9 @@ export default class Board extends Component {
         let allBoxesInRow = [];
         var allElements = document.getElementsByTagName('td');
         for (var i = 0, n = allElements.length; i < n; i++) {
-            if (allElements[i].getAttribute("row") == row) {
+            if (allElements[i].getAttribute("row") === row) {
                 if(allElements[i].getAttribute("ownedby") !== null) {
-                    if(allElements[i].getAttribute("ownedby") == turn) {
+                    if(allElements[i].getAttribute("ownedby") === turn) {
                         allBoxesInRow.push(parseInt(allElements[i].getAttribute("column")));
                     }
                 }
@@ -181,39 +181,39 @@ export default class Board extends Component {
         let row = target.getAttribute("row");
         let column = target.getAttribute("column");
 
-        let allBoxesDiagonal = [];
+        let allBoxesDiagonalRightTop = [];
         var allElements = document.getElementsByTagName('td');
 
         for (var i = 0, n = allElements.length; i < n; i++) {
-            if ((allElements[i].getAttribute("row") == row) && (allElements[i].getAttribute("column") == column)) {
-                allBoxesDiagonal.push(parseInt(allElements[i].getAttribute("column")));
+            if ((allElements[i].getAttribute("row") === row) && (allElements[i].getAttribute("column") === column)) {
+                allBoxesDiagonalRightTop.push(parseInt(allElements[i].getAttribute("column")));
             }
 
             for (var a = 1; a < 4; a++) {
-                if ((allElements[i].getAttribute("row") == (parseInt(row) + a)) && (allElements[i].getAttribute("column") == (parseInt(column) - a))) {
+                if ((allElements[i].getAttribute("row") === (parseInt(row) + a)) && (allElements[i].getAttribute("column") === (parseInt(column) - a))) {
                     if(allElements[i].getAttribute("ownedby") !== null) {
-                        if(allElements[i].getAttribute("ownedby") == turn) {
-                            allBoxesDiagonal.push(parseInt(allElements[i].getAttribute("column")));
+                        if(allElements[i].getAttribute("ownedby") === turn) {
+                            allBoxesDiagonalRightTop.push(parseInt(allElements[i].getAttribute("column")));
                         }
                     }
                 }
             }
             for (var a = 1; a < 4; a++) {
-                if ((allElements[i].getAttribute("row") == (parseInt(row) - a)) && (allElements[i].getAttribute("column") == (parseInt(column) + a))) {
+                if ((allElements[i].getAttribute("row") === (parseInt(row) - a)) && (allElements[i].getAttribute("column") === (parseInt(column) + a))) {
                     if(allElements[i].getAttribute("ownedby") !== null) {
-                        if(allElements[i].getAttribute("ownedby") == turn) {
-                            allBoxesDiagonal.push(parseInt(allElements[i].getAttribute("column")));
+                        if(allElements[i].getAttribute("ownedby") === turn) {
+                            allBoxesDiagonalRightTop.push(parseInt(allElements[i].getAttribute("column")));
                         }
                     }
                 }
             }
         }
 
-        allBoxesDiagonal.sort(function(a, b) {
+        allBoxesDiagonalRightTop.sort(function(a, b) {
             return a - b;
         });
 
-        if (this.checkConsec(allBoxesDiagonal)) {
+        if (this.checkConsec(allBoxesDiagonalRightTop)) {
             return true;
         } else {
             return false;
@@ -230,7 +230,7 @@ export default class Board extends Component {
 
         for (var i = 0; i < array.length; i++) {
             // Also need to make sure the next array item is a consecutive increase.
-            if (array[i] != current && array[i] === array[i-1] + 1) {
+            if (array[i] !== current && array[i] === array[i-1] + 1) {
                 if (cnt > 3) {
                     return true;
                 }
