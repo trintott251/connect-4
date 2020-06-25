@@ -1,7 +1,8 @@
 import React, { Component, Fragment } from "react";
 import "./App.scss";
 
-import Board from './components/Board/Board.js';
+import TwoPlayers from './components/Board/Board.js';
+import VsComputer from './components/VsComputer/VsComputer.js';
 
 class App extends Component {
     render() {
@@ -10,7 +11,8 @@ class App extends Component {
                 <header>
                     <p>Connect Four</p>
                 </header>
-                <Board />
+                {/* <TwoPlayers /> */}
+                <VsComputer />
                 <footer>
                     <p>@2020 Trinto Thielen</p>
                 </footer>

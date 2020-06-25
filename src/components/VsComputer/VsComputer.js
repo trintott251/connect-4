@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from "react";
-import styles from "./Board.module.scss";
+import styles from "./VsComputer.module.scss";
 import GameOverDialog from '../GameOverDialog/GameOverDialog';
 
 export default class Board extends Component {
@@ -30,12 +30,6 @@ export default class Board extends Component {
             )
         }
 
-        // if (this.state.tableInit.length == 0) {
-        //     this.setState({ tableInit: rows.slice(), table: rows });
-        // } else {
-        //     this.setState({ table: this.state.tableInit })
-        // }
-
         this.setState({ table: rows });
     }
 
@@ -45,7 +39,7 @@ export default class Board extends Component {
         for(let i = 0; i < 7; i++){
             data.push(
                 <td column={i} row={row} key={i} checked={false}>
-                    <div className={styles.circle} onClick={(e) => this.clickBox(e)}></div>
+                    <div className={styles.circle} onClick={(e) => this.clickBox(e)}>{row} - {i}</div>
                 </td>
                 // <td column={i} row={row} key={i} checked={false} onClick={(e) => this.clickBox(e)}>
                 //     <div className={styles.circle}></div>
@@ -65,61 +59,36 @@ export default class Board extends Component {
         let column = parent.getAttribute("column");
 
         let boxToCheck = this.getBoxToCheck(column);
-        
-        if (boxToCheck !== null) {
-            if (boxToCheck.getAttribute("checked") !== null) { 
-                return;
-            } else {
-                let playerTurn = this.state.playerTurn;
-                playerTurn === 1 ? boxToCheck.childNodes[0].style.backgroundColor = "red" : boxToCheck.childNodes[0].style.backgroundColor = "blue";
-                boxToCheck.setAttribute('checked', 'true');
-                boxToCheck.setAttribute('ownedby', this.state.playerTurn);
-                this.checkIfWin(boxToCheck);
-                // this.setState({ lastCheckedBox: boxToCheck });
-                playerTurn === 1 ? this.setState({playerTurn:2}) : this.setState({playerTurn:1});
-            }
-        }
 
-        this.computerReacts();
+        if (boxToCheck !== null) { 
+            this.makeMove(boxToCheck);
+            this.computerReacts(boxToCheck);
+        }
     }
 
-    // clickBox = (e) => {
-    //     let target = e.target;
-
-    //     // if (target.tagName !== "td") {
-    //     //     return null;
-    //     // }
-
-    //     let child = target.childNodes[0];
-    //     let column = target.getAttribute("column");
-    //     console.log("target", target);
-    //     // let row = parent.parentNode.getAttribute("row");
-
-    //     let boxToCheck = this.getBoxToCheck(column);
-    //     console.log("boxToCheck", boxToCheck);
-
-    //     if (target.style.cssText) { 
-    //         return;
-    //     } else {
-    //         let playerTurn = this.state.playerTurn;
-    //         playerTurn == 1 ? boxToCheck.childNodes[0].style.backgroundColor = "red" : boxToCheck.childNodes[0].style.backgroundColor = "blue";
-    //         boxToCheck.setAttribute('checked', 'true');
-    //         boxToCheck.setAttribute('ownedby', this.state.playerTurn);
-    //         playerTurn == 1 ? this.setState({playerTurn:2}) : this.setState({playerTurn:1});
-    //     }
-
-    //     this.checkIfWin(target);
-    // }
+    makeMove = (boxToCheck) => {
+        if (boxToCheck.getAttribute("checked") !== null) {
+            return;
+        } else {
+            let playerTurn = this.state.playerTurn;
+            console.log("player turn", playerTurn);
+            playerTurn === 1 ? boxToCheck.childNodes[0].style.backgroundColor = "red" : boxToCheck.childNodes[0].style.backgroundColor = "blue";
+            boxToCheck.setAttribute('checked', 'true');
+            boxToCheck.setAttribute('ownedby', this.state.playerTurn);
+            this.checkIfWin(boxToCheck);
+            playerTurn === 1 ? this.setState({playerTurn:2}) : this.setState({playerTurn:1});
+        }
+    }
 
     getBoxToCheck = (column) => {
         let allBoxesInColumn = [];
         var allElements = document.getElementsByTagName('td');
         for (var i = 0, n = allElements.length; i < n; i++)
         {
-          if (allElements[i].getAttribute("column") === column)
-          {
-            allBoxesInColumn.push(allElements[i]);
-          }
+            if (allElements[i].getAttribute("column") == column)
+            {
+                allBoxesInColumn.push(allElements[i]);
+            }
         }
 
         let boxToCheck;
@@ -304,9 +273,21 @@ export default class Board extends Component {
         this.setState({ gameOver: false, playerWon: null, playerTurn: 1 });
     }
 
-    // computerReacts = () => {
-    //     console.log("computer reacts");
-    // }
+    computerReacts = (lastCheckedBox) => {
+        console.log("computer reacts");
+        let self = this;
+
+        let row = lastCheckedBox.getAttribute("row");
+        let column = lastCheckedBox.getAttribute("column");
+
+        let maxColumn = (parseInt(column) + 1) < 7 ? (parseInt(column) + 1) : (parseInt(column));
+        let minColumn = (parseInt(column) - 1) > -1 ? (parseInt(column) - 1) : (parseInt(column));
+
+        let randomColumn = Math.floor(Math.random() * (maxColumn - minColumn + 1) + minColumn);
+        let boxToCheck = this.getBoxToCheck(randomColumn);
+        // this.makeMove(boxToCheck);
+        setTimeout(() => self.makeMove(boxToCheck), 1000);
+    }
 
 
     render() {
@@ -322,7 +303,11 @@ export default class Board extends Component {
                     />
                     : <div className={styles["board"]}>
                         <div className={styles["player-turn"]}>
-                            Player {playerTurn}'s turn
+                            {
+                                playerTurn == 1
+                                ? "It's your turn!"
+                                : "It's the computers turn"
+                            }
                         </div>
                         <table>
                             <tbody>
