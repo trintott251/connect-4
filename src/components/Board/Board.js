@@ -6,23 +6,36 @@ export default class Board extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            // tableInit: [],
+            table: [],
             playerTurn: 1,
             gameOver: false,
             playerWon: null
         };
     }
 
+    componentDidMount = () => {
+        this.createBoard();
+    }
+
     createBoard = () => {
         let rows = [];
         
-        for(let i = 0; i < 6; i++){
+        for(let i = 0; i < 6; i++) {
             rows.push(
                 <tr row={i} key={i}>
                     {this.createBoxes(i)}
                 </tr>
             )
         }
-        return rows;
+
+        // if (this.state.tableInit.length == 0) {
+        //     this.setState({ tableInit: rows.slice(), table: rows });
+        // } else {
+        //     this.setState({ table: this.state.tableInit })
+        // }
+
+        this.setState({ table: rows });
     }
 
     createBoxes = (row) => {
@@ -282,22 +295,30 @@ export default class Board extends Component {
         }
     }
 
+    playAgain = () => {
+        console.log("play again pressed");
+        this.setState({ gameOver: false, playerWon: null, playerTurn: 1 });
+    }
+
     render() {
         let { gameOver, playerWon } = this.state;
 
         return (
             <Fragment>
                 {
-                    gameOver &&
-                    <GameOverDialog playerWon={playerWon}/>
+                    gameOver 
+                    ? <GameOverDialog
+                        playAgain={() => this.playAgain()}
+                        playerWon={playerWon}
+                    />
+                    : <div className={styles["board"]}>
+                        <table>
+                            <tbody>
+                                {this.state.table}
+                            </tbody>
+                        </table>
+                    </div>
                 }
-                <div className={styles["board"]}>
-                    <table>
-                        <tbody>
-                            {this.createBoard()}
-                        </tbody>
-                    </table>
-                </div>
             </Fragment>
         );
     }
