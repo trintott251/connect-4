@@ -11,7 +11,7 @@ export default class GameOverDialog extends Component {
                 <div className={styles.dialog}>
                     <div className={styles.text}>
                         <p className={styles["game-over"]}>Game over</p>
-                        <p className={styles["player-won"]}>Player <span className={colorWon == "red" ? styles.red : styles.blue}>{colorWon}</span> Won</p>
+                        <p className={styles["player-won"]}>Player <span className={colorWon == "Red" ? styles.red : styles.blue}>{colorWon}</span> Won</p>
                     </div>
                     <button className={styles["play-again"]} onClick={this.props.playAgain}>
                         Play again

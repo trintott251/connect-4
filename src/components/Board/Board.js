@@ -301,7 +301,7 @@ export default class Board extends Component {
     }
 
     render() {
-        let { gameOver, playerWon } = this.state;
+        let { gameOver, playerWon, playerTurn } = this.state;
 
         return (
             <Fragment>
@@ -312,6 +312,9 @@ export default class Board extends Component {
                         playerWon={playerWon}
                     />
                     : <div className={styles["board"]}>
+                        <div className={styles["player-turn"]}>
+                            Player {playerTurn}'s turn
+                        </div>
                         <table>
                             <tbody>
                                 {this.state.table}

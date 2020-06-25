@@ -1,9 +1,6 @@
 import React, { Component, Fragment } from "react";
 import "./App.scss";
 
-// import Header from './components/Header/Header';
-// import Home from './components/Home/Home';
-// import Products from './components/Products/Products';
 import Board from './components/Board/Board.js';
 
 class App extends Component {
