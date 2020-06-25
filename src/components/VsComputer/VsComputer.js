@@ -6,7 +6,6 @@ export default class Board extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            // tableInit: [],
             table: [],
             playerTurn: 1,
             gameOver: false,
@@ -41,9 +40,6 @@ export default class Board extends Component {
                 <td column={i} row={row} key={i} checked={false}>
                     <div className={styles.circle} onClick={(e) => this.clickBox(e)}></div>
                 </td>
-                // <td column={i} row={row} key={i} checked={false} onClick={(e) => this.clickBox(e)}>
-                //     <div className={styles.circle}></div>
-                // </td>
             )
         }
         return data;
@@ -71,7 +67,6 @@ export default class Board extends Component {
             return;
         } else {
             let playerTurn = this.state.playerTurn;
-            console.log("player turn", playerTurn);
             playerTurn === 1 ? boxToCheck.childNodes[0].style.backgroundColor = "red" : boxToCheck.childNodes[0].style.backgroundColor = "blue";
             boxToCheck.setAttribute('checked', 'true');
             boxToCheck.setAttribute('ownedby', this.state.playerTurn);
@@ -269,22 +264,17 @@ export default class Board extends Component {
     }
 
     playAgain = () => {
-        console.log("play again pressed");
         this.setState({ gameOver: false, playerWon: null, playerTurn: 1 });
     }
 
     computerReacts = (lastCheckedBox) => {
-        console.log("computer reacts");
-        let self = this;
-
         let column = lastCheckedBox.getAttribute("column");
-
         let maxColumn = (parseInt(column) + 1) < 7 ? (parseInt(column) + 1) : (parseInt(column));
         let minColumn = (parseInt(column) - 1) > -1 ? (parseInt(column) - 1) : (parseInt(column));
-
         let randomColumn = Math.floor(Math.random() * (maxColumn - minColumn + 1) + minColumn);
         let boxToCheck = this.getBoxToCheck(randomColumn);
-        setTimeout(() => self.makeMove(boxToCheck), 1000);
+        
+        setTimeout(() => this.makeMove(boxToCheck), 1000);
     }
 
 
