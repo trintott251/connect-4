@@ -79,37 +79,7 @@ export default class Board extends Component {
                 playerTurn === 1 ? this.setState({playerTurn:2}) : this.setState({playerTurn:1});
             }
         }
-
-        this.computerReacts();
     }
-
-    // clickBox = (e) => {
-    //     let target = e.target;
-
-    //     // if (target.tagName !== "td") {
-    //     //     return null;
-    //     // }
-
-    //     let child = target.childNodes[0];
-    //     let column = target.getAttribute("column");
-    //     console.log("target", target);
-    //     // let row = parent.parentNode.getAttribute("row");
-
-    //     let boxToCheck = this.getBoxToCheck(column);
-    //     console.log("boxToCheck", boxToCheck);
-
-    //     if (target.style.cssText) { 
-    //         return;
-    //     } else {
-    //         let playerTurn = this.state.playerTurn;
-    //         playerTurn == 1 ? boxToCheck.childNodes[0].style.backgroundColor = "red" : boxToCheck.childNodes[0].style.backgroundColor = "blue";
-    //         boxToCheck.setAttribute('checked', 'true');
-    //         boxToCheck.setAttribute('ownedby', this.state.playerTurn);
-    //         playerTurn == 1 ? this.setState({playerTurn:2}) : this.setState({playerTurn:1});
-    //     }
-
-    //     this.checkIfWin(target);
-    // }
 
     getBoxToCheck = (column) => {
         let allBoxesInColumn = [];
@@ -303,11 +273,6 @@ export default class Board extends Component {
         console.log("play again pressed");
         this.setState({ gameOver: false, playerWon: null, playerTurn: 1 });
     }
-
-    // computerReacts = () => {
-    //     console.log("computer reacts");
-    // }
-
 
     render() {
         let { gameOver, playerWon, playerTurn } = this.state;

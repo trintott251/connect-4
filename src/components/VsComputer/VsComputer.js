@@ -39,7 +39,7 @@ export default class Board extends Component {
         for(let i = 0; i < 7; i++){
             data.push(
                 <td column={i} row={row} key={i} checked={false}>
-                    <div className={styles.circle} onClick={(e) => this.clickBox(e)}>{row} - {i}</div>
+                    <div className={styles.circle} onClick={(e) => this.clickBox(e)}></div>
                 </td>
                 // <td column={i} row={row} key={i} checked={false} onClick={(e) => this.clickBox(e)}>
                 //     <div className={styles.circle}></div>
@@ -277,7 +277,6 @@ export default class Board extends Component {
         console.log("computer reacts");
         let self = this;
 
-        let row = lastCheckedBox.getAttribute("row");
         let column = lastCheckedBox.getAttribute("column");
 
         let maxColumn = (parseInt(column) + 1) < 7 ? (parseInt(column) + 1) : (parseInt(column));
@@ -285,7 +284,6 @@ export default class Board extends Component {
 
         let randomColumn = Math.floor(Math.random() * (maxColumn - minColumn + 1) + minColumn);
         let boxToCheck = this.getBoxToCheck(randomColumn);
-        // this.makeMove(boxToCheck);
         setTimeout(() => self.makeMove(boxToCheck), 1000);
     }
 
