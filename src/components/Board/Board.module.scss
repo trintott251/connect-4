@@ -19,11 +19,20 @@
                 margin: 10px;
                 border: 1px solid black;
                 padding: 6px;
+                position: relative;
+                z-index: 2;
 
                 .circle {
                     height: 100%;
                     width: 100%;
                     border-radius: 50%;
+                    user-select: none;
+                    -moz-user-select: none;
+                    -khtml-user-select: none;
+                    -webkit-user-select: none;
+                    -o-user-select: none;
+                    position: relative;
+                    z-index: 1;
                 }
             }
         }

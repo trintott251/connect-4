@@ -31,6 +31,9 @@ export default class Board extends Component {
                 <td column={i} row={row} key={i} checked={false}>
                     <div className={styles.circle} onClick={(e) => this.clickBox(e)}>{row} - {i}</div>
                 </td>
+                // <td column={i} row={row} key={i} checked={false} onClick={(e) => this.clickBox(e)}>
+                //     <div className={styles.circle}></div>
+                // </td>
             )
         }
         return data;
@@ -58,6 +61,34 @@ export default class Board extends Component {
         this.checkIfWin(parent);
     }
 
+    // clickBox = (e) => {
+    //     let target = e.target;
+
+    //     // if (target.tagName !== "td") {
+    //     //     return null;
+    //     // }
+
+    //     let child = target.childNodes[0];
+    //     let column = target.getAttribute("column");
+    //     console.log("target", target);
+    //     // let row = parent.parentNode.getAttribute("row");
+
+    //     let boxToCheck = this.getBoxToCheck(column);
+    //     console.log("boxToCheck", boxToCheck);
+
+    //     if (target.style.cssText) { 
+    //         return;
+    //     } else {
+    //         let playerTurn = this.state.playerTurn;
+    //         playerTurn == 1 ? boxToCheck.childNodes[0].style.backgroundColor = "red" : boxToCheck.childNodes[0].style.backgroundColor = "blue";
+    //         boxToCheck.setAttribute('checked', 'true');
+    //         boxToCheck.setAttribute('ownedby', this.state.playerTurn);
+    //         playerTurn == 1 ? this.setState({playerTurn:2}) : this.setState({playerTurn:1});
+    //     }
+
+    //     this.checkIfWin(target);
+    // }
+
     getBoxToCheck = (column) => {
         let allBoxesInColumn = [];
         var allElements = document.getElementsByTagName('td');
@@ -84,7 +115,7 @@ export default class Board extends Component {
     checkIfWin = (target) => {
         // let vertical = this.checkVertical(target);
         // let horizontal = this.checkHorizontal(target);
-        let diagonal = this.checkDiagonal(diagonal);
+        let diagonal = this.checkDiagonal(target);
         console.log("horizontal check: ", diagonal)
 
         // if (this.checkVertical() || this.checkHorizontal() || this.checkDiagonal()) {
@@ -141,26 +172,56 @@ export default class Board extends Component {
     }
 
     checkDiagonal = (target) => {
+        let diagonalRightTop = this.diagonalRightTop(target);
+        console.log("diagonalRightTop check: ", diagonalRightTop)
+    }
+
+    diagonalRightTop = (target) => {
         let turn = this.state.playerTurn;
         let row = target.getAttribute("row");
+        let column = target.getAttribute("column");
 
-        let allBoxesInRow = [];
+        let allBoxesDiagonal = [];
         var allElements = document.getElementsByTagName('td');
+
         for (var i = 0, n = allElements.length; i < n; i++) {
-            if (allElements[i].getAttribute("row") == row) {
-                if(allElements[i].getAttribute("ownedby") !== null) {
-                    if(allElements[i].getAttribute("ownedby") == turn) {
-                        allBoxesInRow.push(parseInt(allElements[i].getAttribute("column")));
+            if ((allElements[i].getAttribute("row") == row) && (allElements[i].getAttribute("column") == column)) {
+                allBoxesDiagonal.push(parseInt(allElements[i].getAttribute("column")));
+            }
+
+            for (var a = 1; a < 4; a++) {
+                if ((allElements[i].getAttribute("row") == (parseInt(row) + a)) && (allElements[i].getAttribute("column") == (parseInt(column) - a))) {
+                    if(allElements[i].getAttribute("ownedby") !== null) {
+                        if(allElements[i].getAttribute("ownedby") == turn) {
+                            allBoxesDiagonal.push(parseInt(allElements[i].getAttribute("column")));
+                        }
+                    }
+                }
+            }
+            for (var a = 1; a < 4; a++) {
+                if ((allElements[i].getAttribute("row") == (parseInt(row) - a)) && (allElements[i].getAttribute("column") == (parseInt(column) + a))) {
+                    if(allElements[i].getAttribute("ownedby") !== null) {
+                        if(allElements[i].getAttribute("ownedby") == turn) {
+                            allBoxesDiagonal.push(parseInt(allElements[i].getAttribute("column")));
+                        }
                     }
                 }
             }
         }
 
-        if (this.checkConsec(allBoxesInRow)) {
+        allBoxesDiagonal.sort(function(a, b) {
+            return a - b;
+        });
+
+        if (this.checkConsec(allBoxesDiagonal)) {
             return true;
         } else {
             return false;
         }
+    }
+
+    diagonalLeftTop = () => {
+        
     }
 
     checkConsec = (array) => {
